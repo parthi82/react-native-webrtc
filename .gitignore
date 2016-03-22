@@ -3,3 +3,4 @@
 node_modules
 RCTWebRTC.xcodeproj/xcuserdata
 RCTWebRTC.xcodeproj/project.xcworkspace
+.DS_Store

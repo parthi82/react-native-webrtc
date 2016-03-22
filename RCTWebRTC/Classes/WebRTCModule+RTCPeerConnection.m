@@ -1,4 +1,4 @@
-//
+q//
 //  WebRTCModule+RTCPeerConnection.m
 //
 //  Created by one on 2015/9/24.
@@ -63,7 +63,7 @@ RCT_EXPORT_METHOD(peerConnectionRemoveStream:(nonnull NSNumber *)streamID object
 }
 
 
-RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID constraints:(nonnull NSDictionary *)constraints callback:(RCTResponseSenderBlock)callback)
 {
   RTCPeerConnection *peerConnection = self.peerConnections[objectID];
   [peerConnection createOfferWithCallback:^(RTCSessionDescription *sdp, NSError *error) {
@@ -74,12 +74,34 @@ RCT_EXPORT_METHOD(peerConnectionCreateOffer:(nonnull NSNumber *)objectID callbac
     } else {
       callback(@[@(YES), @{@"sdp": sdp.description, @"type": sdp.type}]);
     }
-
-  } constraints:nil];
+    NSLog(@"contraints: %@", constraints);
+} constraints:[self createRTCMediaConstraintsFromJsObj:constraints]];
 }
 
 - (RTCMediaConstraints *)defaultAnswerConstraints {
   return [self defaultOfferConstraints];
+}
+
+- (RTCMediaConstraints *) createRTCMediaConstraintsFromJsObj:(NSDictionary *) constraints {
+    NSNumber *audioConstraints = [constraints objectForKey:@"OfferToReceiveAudio"];
+    NSNumber *videoConstraints = [constraints objectForKey:@"OfferToReceiveVideo"];
+    NSString *audioValue = @"false";
+    NSString *videoValue = @"false";
+    if (audioConstraints) {
+        audioValue = @"true";
+    }
+    if (videoConstraints) {
+        videoValue = @"true";
+    }
+    NSArray *mandatoryConstraints = @[
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveAudio" value:audioValue],
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveVideo" value:videoValue]
+                                      ];
+    RTCMediaConstraints* rtcMediaConstraints =
+    [[RTCMediaConstraints alloc]
+     initWithMandatoryConstraints:mandatoryConstraints
+     optionalConstraints:nil];
+    return rtcMediaConstraints;
 }
 
 - (RTCMediaConstraints *)defaultOfferConstraints {
