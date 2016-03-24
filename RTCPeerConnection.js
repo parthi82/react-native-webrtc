@@ -34,7 +34,7 @@ class RTCPeerConnection extends RTCPeerConnectionBase {
     WebRTCModule.peerConnectionRemoveStream(stream._streamId, this._peerConnectionId);
   }
   createOfferImpl(success: ?Function, failure: ?Function, constraints) {
-    WebRTCModule.peerConnectionCreateOffer(this._peerConnectionId, (successful, data) => {
+    WebRTCModule.peerConnectionCreateOffer(this._peerConnectionId, constraints, (successful, data) => {
       if (successful) {
         var sessionDescription = new RTCSessionDescription(data);
         success(sessionDescription);
