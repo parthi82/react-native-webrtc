@@ -10,6 +10,7 @@
 #import "RTCVideoCapturer.h"
 #import "RTCVideoSource.h"
 #import "RTCVideoTrack.h"
+#import "RTCAudioTrack.h"
 #import <objc/runtime.h>
 #import "RTCPair.h"
 #import "RTCMediaConstraints.h"
