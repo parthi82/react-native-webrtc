@@ -18,6 +18,9 @@ class RTCMediaStream {
   release() {
     WebRTCModule.mediaStreamRelease(this._streamId);
   }
+  mute(isEnabled) {
+    WebRTCModule.toggleAudio(this._streamId, isEnabled);
+  }
 }
 
 module.exports = RTCMediaStream;

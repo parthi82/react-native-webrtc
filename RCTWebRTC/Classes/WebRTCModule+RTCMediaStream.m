@@ -45,21 +45,21 @@ RCT_EXPORT_METHOD(getUserMedia:(NSDictionary *)constraints callback:(RCTResponse
   if (constraints[@"video"] && [constraints[@"video"] boolValue]) {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     AVCaptureDevice *videoDevice;
-    
+
     if (constraints[@"videoType"]) {
       NSNumber *positionObject = [self captureDevicePositionFrom:constraints[@"videoType"]];
       if (positionObject == nil) {
         videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
       } else {
         AVCaptureDevicePosition position = [positionObject integerValue];
-        
+
         for (AVCaptureDevice *device in devices) {
           if (device.position == position) {
             videoDevice = device;
             break;
           }
         }
-        
+
         if (!videoDevice) {
           videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
         }
@@ -83,6 +83,15 @@ RCT_EXPORT_METHOD(mediaStreamRelease:(nonnull NSNumber *)streamID)
 {
   [self.mediaStreams removeObjectForKey:streamID];
 }
+
+RCT_EXPORT_METHOD(toggleAudio:(nonnull NSNumber *)streamID audioEnabled:( BOOL )audioEnabled)
+{
+  NSLog(@"audioEnabled : %d", audioEnabled);
+  RTCMediaStream *mediaStream = self.mediaStreams[streamID];
+  RTCAudioTrack *audioTrack = [mediaStream.audioTracks firstObject];
+  [audioTrack setEnabled:audioEnabled];
+}
+
 - (RTCMediaConstraints *)defaultMediaStreamConstraints {
   RTCMediaConstraints* constraints =
   [[RTCMediaConstraints alloc]
